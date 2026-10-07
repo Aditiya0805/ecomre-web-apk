@@ -1,41 +1,54 @@
 class SnackModel {
   final String id;
   final String name;
-  final double price;
   final String description;
+  final double price;
   final String imageUrl;
   final int stock;
 
-  SnackModel({
+  const SnackModel({
     required this.id,
     required this.name,
-    required this.price,
     required this.description,
+    required this.price,
     required this.imageUrl,
-    required this.stock,
+    this.stock = 0,
   });
 
-  // Konversi dari Map (SQLite) ke Object Model
-  factory SnackModel.fromMap(Map<String, dynamic> map) {
-    return SnackModel(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      price: (map['price'] as num).toDouble(),
-      description: map['description'] as String,
-      imageUrl: map['image_url'] as String,
-      stock: map['stock'] as int,
-    );
-  }
-
-  // Konversi dari Object Model ke Map (SQLite)
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'price': price,
       'description': description,
+      'price': price,
+      'imageUrl': imageUrl,
+      'stock': stock,
+    };
+  }
+
+  Map<String, dynamic> toDatabaseMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
       'image_url': imageUrl,
       'stock': stock,
     };
+  }
+
+  factory SnackModel.fromMap(Map<String, dynamic> map) {
+    return SnackModel(
+      id: map['id']?.toString() ?? '',
+      name: map['name'] as String? ?? '',
+      description: map['description'] as String? ?? '',
+      price: map['price'] is num
+          ? (map['price'] as num).toDouble()
+          : double.tryParse(map['price'].toString()) ?? 0.0,
+      imageUrl: (map['imageUrl'] ?? map['image_url'] ?? '').toString(),
+      stock: map['stock'] is int
+          ? map['stock'] as int
+          : int.tryParse(map['stock'].toString()) ?? 0,
+    );
   }
 }
