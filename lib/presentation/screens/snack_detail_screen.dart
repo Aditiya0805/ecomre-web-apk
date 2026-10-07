@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
+import '../../data/datasources/cart_manager.dart';
 import '../../data/models/snack_model.dart';
 
 class SnackDetailScreen extends StatelessWidget {
@@ -128,7 +129,27 @@ class SnackDetailScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        CartManager.instance.addItem(snack, 1);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: AppColors.primary,
+                            duration: const Duration(seconds: 2),
+                            content: Row(
+                              children: [
+                                const Icon(Icons.check_circle,
+                                    color: Colors.white),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    '${snack.name} ditambahkan ke keranjang!',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                       icon: const Icon(Icons.shopping_cart_outlined),
                       label: const Text('Tambah ke Keranjang'),
                       style: ElevatedButton.styleFrom(
